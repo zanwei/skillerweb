@@ -178,7 +178,8 @@ export async function getDownloadUrl(platform: Platform): Promise<string> {
   return "https://github.com/zanwei/skiller/releases";
 }
 
-// 同步版本的 getDownloadUrl（用于不支持异步的场景）
+// 同步版本的 getDownloadUrl（用于 GitHub API 不可用时的备用方案）
+// 使用固定文件名，需要配合 CI/CD 在发布时创建不带版本号的文件副本
 export function getDownloadUrlSync(platform: Platform): string {
   const baseUrl = "https://github.com/zanwei/skiller/releases/latest/download";
 

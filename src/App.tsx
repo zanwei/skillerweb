@@ -52,10 +52,17 @@ export function App() {
 
   // 直接触发文件下载
   const triggerDownload = (url: string) => {
-    // 使用 window.open 在新标签页打开下载链接
-    // 浏览器会自动检测文件类型并启动下载，新标签页会自动关闭或显示空白
-    // 这是最可靠的跨域文件下载方式
-    window.open(url, '_blank', 'noopener,noreferrer');
+    // 创建一个临时的 <a> 标签来触发下载
+    // 这种方式比 window.open 更可靠，不会被弹出窗口阻止器拦截
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    // 如果是文件下载链接，添加 download 属性
+    // 注意：由于是跨域链接，download 属性可能不生效，但链接仍会正常跳转
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (

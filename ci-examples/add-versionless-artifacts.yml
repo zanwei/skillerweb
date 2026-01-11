@@ -1,0 +1,113 @@
+# 简化版：仅添加不带版本号的文件副本
+# 
+# 如果 Skiller 项目已有 CI/CD 配置，只需在现有 workflow 中添加以下步骤：
+# 在 "tauri-action" 步骤之后添加此步骤
+
+# ============================================================
+# 方案 1：在构建步骤后添加（推荐）
+# ============================================================
+
+# 添加到每个平台的构建 job 中，在 tauri-action 之后：
+
+- name: Create version-less artifact copy
+  shell: bash
+  run: |
+    # 获取版本号
+    VERSION="${{ github.ref_name }}"
+    VERSION=${VERSION#v}  # 移除 'v' 前缀
+    
+    # 定义文件映射
+    declare -A FILE_MAP
+    FILE_MAP["Skiller_${VERSION}_aarch64.dmg"]="Skiller_aarch64.dmg"
+    FILE_MAP["Skiller_${VERSION}_x64.dmg"]="Skiller_x64.dmg"
+    FILE_MAP["Skiller_${VERSION}_x64-setup.exe"]="Skiller_x64-setup.exe"
+    FILE_MAP["Skiller_${VERSION}_amd64.deb"]="Skiller_amd64.deb"
+    
+    # 查找并复制文件
+    for versioned in "${!FILE_MAP[@]}"; do
+      versionless="${FILE_MAP[$versioned]}"
+      # 在 bundle 目录下递归查找
+      found=$(find src-tauri/target -name "$versioned" -type f 2>/dev/null | head -1)
+      if [ -n "$found" ]; then
+        dir=$(dirname "$found")
+        echo "Creating: $dir/$versionless"
+        cp "$found" "$dir/$versionless"
+      fi
+    done
+
+- name: Upload version-less artifacts
+  uses: softprops/gh-release@v1
+  with:
+    files: |
+      src-tauri/target/**/Skiller_aarch64.dmg
+      src-tauri/target/**/Skiller_x64.dmg
+      src-tauri/target/**/Skiller_x64-setup.exe
+      src-tauri/target/**/Skiller_amd64.deb
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+# ============================================================
+# 方案 2：使用 GitHub CLI 在发布后添加
+# ============================================================
+
+# 添加一个单独的 job，在所有构建完成后运行：
+
+add-versionless-assets:
+  needs: [build]  # 依赖构建 job
+  runs-on: ubuntu-latest
+  steps:
+    - name: Download release assets and create version-less copies
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        VERSION="${{ github.ref_name }}"
+        VERSION=${VERSION#v}
+        REPO="${{ github.repository }}"
+        
+        # 下载带版本号的文件并以新名称上传
+        declare -A FILE_MAP
+        FILE_MAP["Skiller_${VERSION}_aarch64.dmg"]="Skiller_aarch64.dmg"
+        FILE_MAP["Skiller_${VERSION}_x64.dmg"]="Skiller_x64.dmg"
+        FILE_MAP["Skiller_${VERSION}_x64-setup.exe"]="Skiller_x64-setup.exe"
+        FILE_MAP["Skiller_${VERSION}_amd64.deb"]="Skiller_amd64.deb"
+        
+        for versioned in "${!FILE_MAP[@]}"; do
+          versionless="${FILE_MAP[$versioned]}"
+          
+          # 下载带版本号的文件
+          if gh release download "${{ github.ref_name }}" --repo "$REPO" --pattern "$versioned" 2>/dev/null; then
+            # 重命名并上传
+            mv "$versioned" "$versionless"
+            gh release upload "${{ github.ref_name }}" "$versionless" --repo "$REPO" --clobber
+            echo "Uploaded: $versionless"
+          fi
+        done
+
+
+# ============================================================
+# 方案 3：使用 tauri-action 的 tauriScript 参数
+# ============================================================
+
+# 如果使用 tauri-action，可以自定义构建产物名称
+# 在 tauri.conf.json 中配置：
+
+# {
+#   "tauri": {
+#     "bundle": {
+#       "identifier": "com.zanwei.skiller",
+#       "macOS": {
+#         "dmg": {
+#           "appName": "Skiller"
+#         }
+#       },
+#       "windows": {
+#         "nsis": {
+#           "displayName": "Skiller"
+#         }
+#       }
+#     }
+#   }
+# }
+
+# 然后在 workflow 中使用自定义脚本处理文件名
