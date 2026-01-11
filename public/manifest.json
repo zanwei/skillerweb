@@ -1,7 +1,7 @@
 {
   "name": "Skiller - Claude Code Plugins & Agent Skills",
   "short_name": "Skiller",
-  "description": "A menubar app for browsing and installing Claude Code plugins and Agent Skills.",
+  "description": "A menubar app for browsing and installing Claude Code plugins and Agent Skills",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
