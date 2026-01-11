@@ -143,9 +143,9 @@ export function Hero({ onDownload }: HeroProps) {
 
         {/* Subtitle */}
             <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mb-8 font-light">
-          A menubar app for discovering, browsing, and installing{" "}
+          A menubar app for browsing and installing{" "}
           <span className="text-foreground font-medium">Claude Code plugins</span> and{" "}
-          <span className="text-foreground font-medium">Agent Skills</span> with just a click.
+          <span className="text-foreground font-medium">Agent Skills</span>.
         </p>
 
         {/* CTA Buttons */}
