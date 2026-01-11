@@ -1,0 +1,11 @@
+# robots.txt for Skiller
+# https://skiller.menu/
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://skiller.menu/sitemap.xml
+
+# Crawl-delay (optional, for polite crawling)
+Crawl-delay: 1
