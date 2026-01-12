@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState, lazy, Suspense } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
 import { detectPlatform, getDownloadUrl, getDownloadUrlSync } from "@/lib/download";
@@ -82,6 +83,7 @@ export function App() {
       <Suspense fallback={<SectionLoader />}>
         <Footer onDownload={handleDownload} />
       </Suspense>
+      <Analytics />
     </div>
   );
 }
