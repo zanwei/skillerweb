@@ -196,18 +196,13 @@ export function Hero({ onDownload }: HeroProps) {
 
   return (
     <section className="relative min-h-dvh flex items-center justify-center pt-24 pb-20 overflow-hidden">
-      {/* Subtle dot pattern background */}
+      {/* Subtle gradient background - GPU accelerated */}
       <div 
-        className="absolute inset-0 opacity-[0.4]"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
-          backgroundSize: '24px 24px',
-          color: 'var(--muted-foreground)',
+          background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120,119,198,0.08), transparent)',
         }}
       />
-      
-      {/* Radial gradient overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,119,198,0.08),transparent)]" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
@@ -272,9 +267,6 @@ export function Hero({ onDownload }: HeroProps) {
           <div
             className="w-full lg:w-auto flex justify-center lg:shrink-0 relative animate-fade-in-up delay-300"
           >
-            {/* Shadow/Glow effect behind panel */}
-            <div className="absolute inset-0 translate-y-4 scale-[0.97] blur-3xl bg-foreground/5 rounded-3xl" />
-            
             <HeroPanel />
           </div>
         </div>
