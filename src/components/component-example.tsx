@@ -246,7 +246,7 @@ function FormExample() {
                   <DropdownMenuLabel>View</DropdownMenuLabel>
                   <DropdownMenuCheckboxItem
                     checked={notifications.email}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={(checked: boolean) =>
                       setNotifications({
                         ...notifications,
                         email: checked === true,
@@ -259,7 +259,7 @@ function FormExample() {
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
                     checked={notifications.sms}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={(checked: boolean) =>
                       setNotifications({
                         ...notifications,
                         sms: checked === true,
@@ -353,7 +353,7 @@ function FormExample() {
                                   </DropdownMenuLabel>
                                   <DropdownMenuCheckboxItem
                                     checked={notifications.push}
-                                    onCheckedChange={(checked) =>
+                                    onCheckedChange={(checked: boolean) =>
                                       setNotifications({
                                         ...notifications,
                                         push: checked === true,
@@ -366,7 +366,7 @@ function FormExample() {
                                   </DropdownMenuCheckboxItem>
                                   <DropdownMenuCheckboxItem
                                     checked={notifications.email}
-                                    onCheckedChange={(checked) =>
+                                    onCheckedChange={(checked: boolean) =>
                                       setNotifications({
                                         ...notifications,
                                         email: checked === true,

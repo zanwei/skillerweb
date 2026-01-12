@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { useEffect, useRef } from "react";
 import {
   Puzzle,
   Sparkles,
@@ -53,38 +53,45 @@ const features = [
   },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.05,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.4,
-    },
-  },
-};
-
 export function Features() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "-50px" }
+    );
+
+    // Observe header
+    if (headerRef.current) {
+      observer.observe(headerRef.current);
+    }
+
+    // Observe feature cards with staggered delay
+    const cards = gridRef.current?.querySelectorAll(".feature-card");
+    cards?.forEach((card, index) => {
+      (card as HTMLElement).style.transitionDelay = `${index * 50}ms`;
+      observer.observe(card);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="features" className="py-24 md:py-32 px-4 sm:px-6 lg:px-8">
+    <section ref={sectionRef} id="features" className="py-24 md:py-32 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+        <div
+          ref={headerRef}
+          className="text-center mb-16 animate-on-scroll"
         >
           <p className="text-sm font-medium text-primary mb-3 tracking-wide uppercase">
             Features
@@ -95,21 +102,17 @@ export function Features() {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto text-pretty">
             Powerful features to help you discover and manage AI plugins and skills.
           </p>
-        </motion.div>
+        </div>
 
         {/* Bento Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
+        <div
+          ref={gridRef}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
         >
           {features.map((feature, index) => (
-            <motion.div
+            <div
               key={index}
-              variants={itemVariants}
-              className={`group relative p-6 rounded-2xl border border-border bg-card hover:bg-accent/50 transition-colors ${feature.span}`}
+              className={`feature-card group relative p-6 rounded-2xl border border-border bg-card hover:bg-accent/50 transition-colors ${feature.span}`}
             >
               {/* Icon */}
               <div className="size-10 rounded-xl bg-muted flex items-center justify-center mb-4">
@@ -123,9 +126,9 @@ export function Features() {
               <p className="text-muted-foreground text-sm leading-relaxed">
                 {feature.description}
               </p>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

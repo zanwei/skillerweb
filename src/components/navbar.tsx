@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Download } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
 
 interface NavbarProps {
   onDownload: () => void;
@@ -20,13 +19,17 @@ export function Navbar({ onDownload }: NavbarProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (id: string) => {
+  const scrollToSection = useCallback((id: string) => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
     setIsMenuOpen(false);
-  };
+  }, []);
+
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen(prev => !prev);
+  }, []);
 
   return (
     <nav
@@ -44,6 +47,8 @@ export function Navbar({ onDownload }: NavbarProps) {
               src="/logo.png"
               alt="Skiller"
               className="size-7 rounded-md object-contain"
+              width={28}
+              height={28}
             />
             <span className="font-semibold text-lg tracking-tight">Skiller</span>
           </div>
@@ -89,7 +94,7 @@ export function Navbar({ onDownload }: NavbarProps) {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={toggleMenu}
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             >
               {isMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -98,53 +103,43 @@ export function Navbar({ onDownload }: NavbarProps) {
         </div>
       </div>
 
-      {/* Mobile Navigation - Full screen overlay */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            className="fixed inset-0 top-16 bg-background/95 backdrop-blur-lg md:hidden z-50"
+      {/* Mobile Navigation - CSS-based animation */}
+      {isMenuOpen && (
+        <div
+          className="fixed inset-0 top-16 bg-background/95 backdrop-blur-lg md:hidden z-50 animate-fade-in"
+        >
+          <div
+            className="flex flex-col p-6 gap-6 animate-slide-down"
           >
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15, delay: 0.05 }}
-              className="flex flex-col p-6 gap-6"
+            <button
+              onClick={() => scrollToSection("features")}
+              className="text-lg font-medium text-foreground hover:text-primary transition-colors text-left py-2"
             >
-              <button
-                onClick={() => scrollToSection("features")}
-                className="text-lg font-medium text-foreground hover:text-primary transition-colors text-left py-2"
-              >
-                Features
-              </button>
-              <button
-                onClick={() => scrollToSection("clients")}
-                className="text-lg font-medium text-foreground hover:text-primary transition-colors text-left py-2"
-              >
-                Integrations
-              </button>
-              <a
-                href="https://github.com/zanwei/skiller"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-lg font-medium text-foreground hover:text-primary transition-colors text-left py-2"
-              >
-                GitHub
-              </a>
-              <div className="pt-4 border-t border-border">
-                <Button onClick={onDownload} className="w-full gap-2" size="lg">
-                  <Download className="size-5" />
-                  Download Skiller
-                </Button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              Features
+            </button>
+            <button
+              onClick={() => scrollToSection("clients")}
+              className="text-lg font-medium text-foreground hover:text-primary transition-colors text-left py-2"
+            >
+              Integrations
+            </button>
+            <a
+              href="https://github.com/zanwei/skiller"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-lg font-medium text-foreground hover:text-primary transition-colors text-left py-2"
+            >
+              GitHub
+            </a>
+            <div className="pt-4 border-t border-border">
+              <Button onClick={onDownload} className="w-full gap-2" size="lg">
+                <Download className="size-5" />
+                Download Skiller
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }

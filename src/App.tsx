@@ -1,10 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, lazy, Suspense } from "react";
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
-import { Features } from "@/components/features";
-import { Clients } from "@/components/clients";
-import { Footer } from "@/components/footer";
 import { detectPlatform, getDownloadUrl, getDownloadUrlSync } from "@/lib/download";
+
+// Lazy load non-critical components
+const Features = lazy(() => import("@/components/features").then(m => ({ default: m.Features })));
+const Clients = lazy(() => import("@/components/clients").then(m => ({ default: m.Clients })));
+const Footer = lazy(() => import("@/components/footer").then(m => ({ default: m.Footer })));
+
+// Minimal loading placeholder
+function SectionLoader() {
+  return <div className="min-h-[400px]" />;
+}
 
 export function App() {
   const [isDark, setIsDark] = useState(false);
@@ -40,8 +47,7 @@ export function App() {
       // 尝试从 GitHub API 获取正确的下载链接
       const downloadUrl = await getDownloadUrl(platform);
       triggerDownload(downloadUrl);
-    } catch (error) {
-      console.error('Failed to get download URL:', error);
+    } catch {
       // 回退到同步版本的 URL
       const fallbackUrl = getDownloadUrlSync(platform);
       triggerDownload(fallbackUrl);
@@ -52,14 +58,10 @@ export function App() {
 
   // 直接触发文件下载
   const triggerDownload = (url: string) => {
-    // 创建一个临时的 <a> 标签来触发下载
-    // 这种方式比 window.open 更可靠，不会被弹出窗口阻止器拦截
     const link = document.createElement('a');
     link.href = url;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
-    // 如果是文件下载链接，添加 download 属性
-    // 注意：由于是跨域链接，download 属性可能不生效，但链接仍会正常跳转
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -70,10 +72,16 @@ export function App() {
       <Navbar onDownload={handleDownload} />
       <main>
         <Hero onDownload={handleDownload} />
-        <Features />
-        <Clients />
+        <Suspense fallback={<SectionLoader />}>
+          <Features />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <Clients />
+        </Suspense>
       </main>
-      <Footer onDownload={handleDownload} />
+      <Suspense fallback={<SectionLoader />}>
+        <Footer onDownload={handleDownload} />
+      </Suspense>
     </div>
   );
 }

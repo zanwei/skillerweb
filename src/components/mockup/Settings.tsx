@@ -67,7 +67,7 @@ function ThemeButtonGroup({
           onClick={() => onChange(theme.value)}
           className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-[13px] font-medium transition-all duration-150 ${
             value === theme.value
-              ? "bg-card text-foreground shadow-sm border border-border/30"
+              ? "bg-card dark:bg-input text-foreground shadow-sm border border-border/30"
               : "text-muted-foreground hover:text-foreground"
           }`}
         >
@@ -207,16 +207,6 @@ export function Settings({ onClose }: SettingsProps) {
             </div>
           </div>
         </section>
-
-        <Divider />
-
-        {/* Footer */}
-        <div className="text-center pt-2 pb-4">
-          <p className="text-[12px] text-muted-foreground">Skiller v1.0.3</p>
-          <a href="https://claude-plugins.dev" className="text-[12px] text-primary hover:underline">
-            Powered by claude-plugins.dev
-          </a>
-        </div>
       </main>
     </div>
   );

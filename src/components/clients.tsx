@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { useEffect, useRef } from "react";
 
 // Import SVG icons
 import ClaudeIcon from "@/assets/icon/claude-color.svg";
@@ -25,16 +25,40 @@ const clients = [
 ];
 
 export function Clients() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "-50px" }
+    );
+
+    if (headerRef.current) {
+      observer.observe(headerRef.current);
+    }
+
+    if (gridRef.current) {
+      observer.observe(gridRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="clients" className="py-24 md:py-32 overflow-hidden">
+    <section ref={sectionRef} id="clients" className="py-24 md:py-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+        <div
+          ref={headerRef}
+          className="text-center mb-12 animate-on-scroll"
         >
           <p className="text-sm font-medium text-primary mb-3 tracking-wide uppercase">
             Integrations
@@ -45,15 +69,13 @@ export function Clients() {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto text-pretty">
             Install skills to all major AI coding assistants.
           </p>
-        </motion.div>
+        </div>
 
         {/* Simple Grid - Better Performance */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex flex-wrap justify-center gap-3"
+        <div
+          ref={gridRef}
+          className="flex flex-wrap justify-center gap-3 animate-on-scroll"
+          style={{ transitionDelay: "100ms" }}
         >
           {clients.map((client, index) => (
             <div
@@ -64,13 +86,15 @@ export function Clients() {
                 src={client.icon}
                 alt={client.name}
                 className="size-5 shrink-0"
+                loading="lazy"
+                decoding="async"
               />
               <span className="text-sm font-medium text-foreground whitespace-nowrap">
                 {client.name}
               </span>
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

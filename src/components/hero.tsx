@@ -1,7 +1,6 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Download, Github } from "lucide-react";
-import { motion } from "motion/react";
 import {
   detectPlatform,
   getSimplePlatformLabel,
@@ -30,19 +29,13 @@ interface HeroProps {
   onDownload: () => void;
 }
 
-export function Hero({ onDownload }: HeroProps) {
-  const [platform, setPlatform] = useState<Platform>("unknown");
-
-  // Panel state
+// Memoized Panel component to prevent unnecessary re-renders
+const HeroPanel = memo(function HeroPanel() {
   const [activeTab, setActiveTab] = useState<Tab>("plugins");
   const [searchQuery, setSearchQuery] = useState("");
   const [pluginCategory, setPluginCategory] = useState<string | null>(null);
   const [skillSort, setSkillSort] = useState<SortOption>("relevance");
   const [showSettings, setShowSettings] = useState(false);
-
-  useEffect(() => {
-    setPlatform(detectPlatform());
-  }, []);
 
   // Filter plugins
   const filteredPlugins = useMemo(() => {
@@ -125,6 +118,83 @@ export function Hero({ onDownload }: HeroProps) {
   }, []);
 
   return (
+    <div className="relative scale-[0.84] sm:scale-[0.96] md:scale-[1.08] lg:scale-100 origin-top">
+      <Panel onOpenSettings={handleOpenSettings} showHeader={!showSettings}>
+        {showSettings ? (
+          <Settings onClose={handleBackFromSettings} />
+        ) : (
+          <>
+            <TabBar
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+              installedCount={installedCount}
+            />
+
+            {activeTab === "plugins" && (
+              <SearchBar
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder="Search plugins..."
+                filterDropdown={
+                  <FilterDropdown
+                    label="Category"
+                    options={categoryOptions}
+                    value={pluginCategory}
+                    onChange={setPluginCategory}
+                  />
+                }
+              />
+            )}
+
+            {activeTab === "skills" && (
+              <SearchBar
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder="Search skills..."
+                filterDropdown={
+                  <SortDropdown
+                    value={skillSort}
+                    onChange={setSkillSort}
+                  />
+                }
+              />
+            )}
+
+            {activeTab === "plugins" && (
+              <PluginList
+                plugins={filteredPlugins}
+                total={mockPlugins.length}
+                onInstall={handleInstallPlugin}
+                onOpen={handleOpenPlugin}
+              />
+            )}
+
+            {activeTab === "skills" && (
+              <SkillList
+                skills={filteredSkills}
+                total={mockSkills.length}
+                onInstall={handleInstallSkill}
+                onInstallTo={handleInstallSkillTo}
+                onDownload={handleDownloadSkill}
+              />
+            )}
+
+            {activeTab === "installed" && <InstalledList />}
+          </>
+        )}
+      </Panel>
+    </div>
+  );
+});
+
+export function Hero({ onDownload }: HeroProps) {
+  const [platform, setPlatform] = useState<Platform>("unknown");
+
+  useEffect(() => {
+    setPlatform(detectPlatform());
+  }, []);
+
+  return (
     <section className="relative min-h-dvh flex items-center justify-center pt-24 pb-20 overflow-hidden">
       {/* Subtle dot pattern background */}
       <div 
@@ -144,35 +214,26 @@ export function Hero({ onDownload }: HeroProps) {
           {/* Left: Text Content */}
           <div className="flex-1 text-center lg:text-left max-w-2xl">
             {/* Main Heading */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight mb-6 text-balance leading-[1.1]"
+            <h1
+              className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight mb-6 text-balance leading-[1.1] animate-fade-in-up delay-100"
             >
               All your skills
               <br />
               <span className="text-muted-foreground">in one place.</span>
-            </motion.h1>
+            </h1>
 
             {/* Subtitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg text-muted-foreground max-w-lg mb-8 text-pretty mx-auto lg:mx-0"
+            <p
+              className="text-lg text-muted-foreground max-w-lg mb-8 text-pretty mx-auto lg:mx-0 animate-fade-in-up delay-200"
             >
               A menubar app for browsing and installing{" "}
               <span className="text-foreground font-medium">Claude Code plugins</span> and{" "}
               <span className="text-foreground font-medium">Agent Skills</span>.
-            </motion.p>
+            </p>
 
             {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-6"
+            <div
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-6 animate-fade-in-up delay-300"
             >
               <Button
                 size="lg"
@@ -197,97 +258,25 @@ export function Hero({ onDownload }: HeroProps) {
                   GitHub
                 </a>
               </Button>
-            </motion.div>
+            </div>
 
             {/* Platform availability */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="text-sm text-muted-foreground"
+            <p
+              className="text-sm text-muted-foreground animate-fade-in-up delay-400"
             >
               Available for macOS, Windows, and Linux
-            </motion.p>
+            </p>
           </div>
 
           {/* Right: Panel Mockup */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="w-full lg:w-auto flex justify-center lg:shrink-0 relative"
+          <div
+            className="w-full lg:w-auto flex justify-center lg:shrink-0 relative animate-fade-in-up delay-300"
           >
             {/* Shadow/Glow effect behind panel */}
             <div className="absolute inset-0 translate-y-4 scale-[0.97] blur-3xl bg-foreground/5 rounded-3xl" />
             
-            <div className="relative scale-[0.84] sm:scale-[0.96] md:scale-[1.08] lg:scale-100 origin-top">
-              {/* App Panel */}
-              <Panel onOpenSettings={handleOpenSettings} showHeader={!showSettings}>
-                {showSettings ? (
-                  <Settings onClose={handleBackFromSettings} />
-                ) : (
-                  <>
-                    <TabBar
-                      activeTab={activeTab}
-                      onTabChange={handleTabChange}
-                      installedCount={installedCount}
-                    />
-
-                    {activeTab === "plugins" && (
-                      <SearchBar
-                        value={searchQuery}
-                        onChange={setSearchQuery}
-                        placeholder="Search plugins..."
-                        filterDropdown={
-                          <FilterDropdown
-                            label="Category"
-                            options={categoryOptions}
-                            value={pluginCategory}
-                            onChange={setPluginCategory}
-                          />
-                        }
-                      />
-                    )}
-
-                    {activeTab === "skills" && (
-                      <SearchBar
-                        value={searchQuery}
-                        onChange={setSearchQuery}
-                        placeholder="Search skills..."
-                        filterDropdown={
-                          <SortDropdown
-                            value={skillSort}
-                            onChange={setSkillSort}
-                          />
-                        }
-                      />
-                    )}
-
-                    {activeTab === "plugins" && (
-                      <PluginList
-                        plugins={filteredPlugins}
-                        total={mockPlugins.length}
-                        onInstall={handleInstallPlugin}
-                        onOpen={handleOpenPlugin}
-                      />
-                    )}
-
-                    {activeTab === "skills" && (
-                      <SkillList
-                        skills={filteredSkills}
-                        total={mockSkills.length}
-                        onInstall={handleInstallSkill}
-                        onInstallTo={handleInstallSkillTo}
-                        onDownload={handleDownloadSkill}
-                      />
-                    )}
-
-                    {activeTab === "installed" && <InstalledList />}
-                  </>
-                )}
-              </Panel>
-            </div>
-          </motion.div>
+            <HeroPanel />
+          </div>
         </div>
       </div>
     </section>

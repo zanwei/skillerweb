@@ -1,6 +1,6 @@
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Github, ExternalLink } from "lucide-react";
-import { motion } from "motion/react";
 
 interface FooterProps {
   onDownload: () => void;
@@ -70,16 +70,34 @@ function FooterLink({
 }
 
 export function Footer({ onDownload }: FooterProps) {
+  const ctaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "-50px" }
+    );
+
+    if (ctaRef.current) {
+      observer.observe(ctaRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <footer className="border-t border-border">
       {/* CTA Section */}
       <div className="py-20 md:py-24 px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5 }}
-          className="max-w-2xl mx-auto text-center"
+        <div
+          ref={ctaRef}
+          className="max-w-2xl mx-auto text-center animate-on-scroll"
         >
           <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight text-balance">
             Ready to get started?
@@ -111,7 +129,7 @@ export function Footer({ onDownload }: FooterProps) {
               </a>
             </Button>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Links Section */}
@@ -125,6 +143,9 @@ export function Footer({ onDownload }: FooterProps) {
                   src="/logo.png"
                   alt="Skiller"
                   className="size-6 rounded-md object-contain"
+                  width={24}
+                  height={24}
+                  loading="lazy"
                 />
                 <span className="font-semibold tracking-tight">
                   Skiller
