@@ -120,15 +120,21 @@
   }
   html {
     @apply font-sans;
+    /* scroll-smooth 移到 JS 中处理，避免影响滚动性能 */
   }
   body {
     @apply font-sans bg-background text-foreground antialiased;
+  }
+  
+  /* 只在需要过渡的元素上应用，而不是全局 - 大幅提升滚动性能 */
+  a, button, [role="button"], input, textarea, select {
+    transition: color 0.15s ease-out, background-color 0.15s ease-out, border-color 0.15s ease-out;
   }
 }
 
 /* ===== Performance-optimized CSS Animations ===== */
 
-/* Fade in up animation - GPU accelerated */
+/* 使用 translate3d 强制 GPU 加速 */
 @keyframes fade-in-up {
   from {
     opacity: 0;
@@ -140,13 +146,11 @@
   }
 }
 
-/* Fade in animation */
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-/* Slide down animation - GPU accelerated */
 @keyframes slide-down {
   from {
     opacity: 0;
@@ -158,7 +162,7 @@
   }
 }
 
-/* Animation classes - GPU accelerated */
+/* Animation classes - 使用 GPU 加速属性 */
 .animate-fade-in-up {
   animation: fade-in-up 0.5s ease-out forwards;
   opacity: 0;
@@ -186,7 +190,7 @@
 .delay-400 { animation-delay: 400ms; }
 .delay-500 { animation-delay: 500ms; }
 
-/* Intersection Observer triggered animations - GPU accelerated */
+/* Intersection Observer 触发的动画 - GPU 加速 */
 .animate-on-scroll {
   opacity: 0;
   transform: translate3d(0, 20px, 0);
@@ -200,7 +204,7 @@
   transform: translate3d(0, 0, 0);
 }
 
-/* Feature card stagger animation - GPU accelerated */
+/* Feature card 动画 - GPU 加速 */
 .feature-card {
   opacity: 0;
   transform: translate3d(0, 20px, 0);
@@ -214,7 +218,35 @@
   transform: translate3d(0, 0, 0);
 }
 
-/* Reduce motion for users who prefer it */
+/* GPU acceleration helpers */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+/* CSS Containment - 隔离重绘区域，大幅提升滚动性能 */
+.contain-layout {
+  contain: layout;
+}
+
+.contain-paint {
+  contain: paint;
+}
+
+.contain-strict {
+  contain: strict;
+}
+
+/* Content visibility - 延迟渲染屏幕外内容 */
+.content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
+/* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in-up,
   .animate-fade-in,

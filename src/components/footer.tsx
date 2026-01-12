@@ -92,7 +92,14 @@ export function Footer({ onDownload }: FooterProps) {
   }, []);
 
   return (
-    <footer className="border-t border-border">
+    <footer 
+      className="border-t border-border"
+      style={{ 
+        contentVisibility: 'auto',
+        containIntrinsicSize: 'auto 500px',
+        contain: 'layout style paint'
+      }}
+    >
       {/* CTA Section */}
       <div className="py-20 md:py-24 px-4 sm:px-6 lg:px-8">
         <div

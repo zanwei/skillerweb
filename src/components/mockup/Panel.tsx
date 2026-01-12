@@ -9,7 +9,10 @@ interface PanelProps {
 
 export function Panel({ children, onOpenSettings, showHeader = true }: PanelProps) {
   return (
-    <div className="relative flex flex-col bg-sidebar border border-border/50 rounded-2xl shadow-2xl shadow-black/10 dark:shadow-black/30 overflow-hidden w-[420px] min-w-[420px] max-w-[420px] h-[682px]">
+    <div 
+      className="relative flex flex-col bg-sidebar border border-border/50 rounded-2xl shadow-xl shadow-black/8 dark:shadow-black/25 overflow-hidden w-[420px] min-w-[420px] max-w-[420px] h-[682px]"
+      style={{ contain: 'strict' }}
+    >
       {/* Window Header - only show when not in settings */}
       {showHeader && (
         <header className="flex items-center justify-between h-[41px] px-2 border-b border-border/50 bg-sidebar">

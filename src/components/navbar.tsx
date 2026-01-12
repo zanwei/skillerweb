@@ -11,8 +11,15 @@ export function Navbar({ onDownload }: NavbarProps) {
   const [hasScrolled, setHasScrolled] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setHasScrolled(window.scrollY > 10);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setHasScrolled(window.scrollY > 10);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -33,11 +40,12 @@ export function Navbar({ onDownload }: NavbarProps) {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,border-color] duration-200 will-change-[background-color] ${
         hasScrolled
-          ? "bg-background/80 backdrop-blur-lg border-b border-border"
+          ? "bg-background/95 backdrop-blur-md border-b border-border"
           : "bg-transparent"
       }`}
+      style={{ contain: 'layout style' }}
     >
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-16 relative">
@@ -106,7 +114,7 @@ export function Navbar({ onDownload }: NavbarProps) {
       {/* Mobile Navigation - CSS-based animation */}
       {isMenuOpen && (
         <div
-          className="fixed inset-0 top-16 bg-background/95 backdrop-blur-lg md:hidden z-50 animate-fade-in"
+          className="fixed inset-0 top-16 bg-background/98 backdrop-blur-sm md:hidden z-50 animate-fade-in"
         >
           <div
             className="flex flex-col p-6 gap-6 animate-slide-down"

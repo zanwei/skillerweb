@@ -86,7 +86,16 @@ export function Features() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="features" className="py-24 md:py-32 px-4 sm:px-6 lg:px-8">
+    <section 
+      ref={sectionRef} 
+      id="features" 
+      className="py-24 md:py-32 px-4 sm:px-6 lg:px-8"
+      style={{ 
+        contentVisibility: 'auto',
+        containIntrinsicSize: 'auto 600px',
+        contain: 'layout style paint'
+      }}
+    >
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div

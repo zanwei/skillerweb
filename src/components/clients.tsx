@@ -53,7 +53,16 @@ export function Clients() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="clients" className="py-24 md:py-32 overflow-hidden">
+    <section 
+      ref={sectionRef} 
+      id="clients" 
+      className="py-24 md:py-32 overflow-hidden"
+      style={{ 
+        contentVisibility: 'auto',
+        containIntrinsicSize: 'auto 400px',
+        contain: 'layout style paint'
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div

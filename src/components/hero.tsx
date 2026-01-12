@@ -118,7 +118,10 @@ const HeroPanel = memo(function HeroPanel() {
   }, []);
 
   return (
-    <div className="relative scale-[0.84] sm:scale-[0.96] md:scale-[1.08] lg:scale-100 origin-top">
+    <div 
+      className="relative scale-[0.84] sm:scale-[0.96] md:scale-[1.08] lg:scale-100 origin-top"
+      style={{ contain: 'layout style' }}
+    >
       <Panel onOpenSettings={handleOpenSettings} showHeader={!showSettings}>
         {showSettings ? (
           <Settings onClose={handleBackFromSettings} />
@@ -195,13 +198,26 @@ export function Hero({ onDownload }: HeroProps) {
   }, []);
 
   return (
-    <section className="relative min-h-dvh flex items-center justify-center pt-24 pb-20 overflow-hidden">
-      {/* Subtle gradient background - GPU accelerated */}
+    <section 
+      className="relative min-h-dvh flex items-center justify-center pt-24 pb-20 overflow-hidden"
+      style={{ contain: 'layout style' }}
+    >
+      {/* Subtle dot pattern background - 使用固定背景避免滚动重绘 */}
       <div 
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 opacity-[0.35] pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120,119,198,0.08), transparent)',
+          backgroundImage: `radial-gradient(circle at 1px 1px, var(--muted-foreground) 0.5px, transparent 0)`,
+          backgroundSize: '20px 20px',
+          backgroundAttachment: 'fixed',
+          willChange: 'auto',
         }}
+        aria-hidden="true"
+      />
+      
+      {/* Radial gradient overlay */}
+      <div 
+        className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,119,198,0.06),transparent)] pointer-events-none"
+        aria-hidden="true"
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
@@ -266,7 +282,14 @@ export function Hero({ onDownload }: HeroProps) {
           {/* Right: Panel Mockup */}
           <div
             className="w-full lg:w-auto flex justify-center lg:shrink-0 relative animate-fade-in-up delay-300"
+            style={{ contain: 'layout' }}
           >
+            {/* Shadow/Glow effect - 简化模糊效果提升性能 */}
+            <div 
+              className="absolute inset-0 translate-y-4 scale-[0.97] blur-2xl bg-foreground/4 rounded-3xl pointer-events-none"
+              aria-hidden="true"
+            />
+            
             <HeroPanel />
           </div>
         </div>
