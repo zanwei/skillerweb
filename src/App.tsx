@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState, lazy, Suspense } from "react";
 import { Analytics } from "@vercel/analytics/react";
+import { track } from "@vercel/analytics";
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
-import { detectPlatform, getDownloadUrl, getDownloadUrlSync } from "@/lib/download";
+import { detectPlatform, getDownloadUrl, getDownloadUrlSync, getSimplePlatformLabel } from "@/lib/download";
 
 // Lazy load non-critical components
 const Features = lazy(() => import("@/components/features").then(m => ({ default: m.Features })));
@@ -43,6 +44,12 @@ export function App() {
     
     const platform = detectPlatform();
     setIsDownloading(true);
+    
+    // 追踪下载事件
+    track("download", {
+      platform: getSimplePlatformLabel(platform),
+      detailedPlatform: platform,
+    });
     
     try {
       // 尝试从 GitHub API 获取正确的下载链接
