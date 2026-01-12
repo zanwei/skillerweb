@@ -1,195 +1,200 @@
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Github, ExternalLink } from "lucide-react";
+import { motion } from "motion/react";
 
 interface FooterProps {
   onDownload: () => void;
 }
 
+const footerLinks = {
+  product: [
+    { label: "Features", href: "#features" },
+    { label: "Integrations", href: "#clients" },
+    {
+      label: "Changelog",
+      href: "https://github.com/zanwei/skiller/releases",
+      external: true,
+    },
+  ],
+  resources: [
+    {
+      label: "Documentation",
+      href: "https://github.com/zanwei/skiller#readme",
+      external: true,
+    },
+    {
+      label: "Plugin Registry",
+      href: "https://claude-plugins.dev",
+      external: true,
+    },
+    {
+      label: "Support",
+      href: "https://github.com/zanwei/skiller/issues",
+      external: true,
+    },
+  ],
+  community: [
+    {
+      label: "GitHub",
+      href: "https://github.com/zanwei/skiller",
+      external: true,
+    },
+    {
+      label: "Contributing",
+      href: "https://github.com/zanwei/skiller/blob/main/CONTRIBUTING.md",
+      external: true,
+    },
+  ],
+};
+
+function FooterLink({
+  href,
+  external,
+  children,
+}: {
+  href: string;
+  external?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
+    >
+      {children}
+      {external && <ExternalLink className="size-3" />}
+    </a>
+  );
+}
+
 export function Footer({ onDownload }: FooterProps) {
   return (
-    <footer className="bg-muted/30 border-t border-border">
+    <footer className="border-t border-border">
       {/* CTA Section */}
-      <div className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl font-medium mb-4">
-            Unite skills.md in one place.
+      <div className="py-20 md:py-24 px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="max-w-2xl mx-auto text-center"
+        >
+          <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight text-balance">
+            Ready to get started?
           </h2>
-          <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-            Download Skiller now and start discovering plugins and skills for
-            Claude Code and other AI assistants.
+          <p className="text-muted-foreground text-lg mb-8 text-pretty">
+            Download Skiller and start discovering plugins and skills.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" onClick={onDownload} className="w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Button
+              size="lg"
+              onClick={onDownload}
+              className="w-full sm:w-auto px-8 h-12"
+            >
               Download Skiller
             </Button>
-            <Button variant="outline" size="lg" asChild className="w-full sm:w-auto">
+            <Button
+              variant="outline"
+              size="lg"
+              asChild
+              className="w-full sm:w-auto px-8 h-12"
+            >
               <a
                 href="https://github.com/zanwei/skiller"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Github className="size-4" />
+                <Github className="size-4 mr-2" />
                 Star on GitHub
               </a>
             </Button>
           </div>
-        </div>
+        </motion.div>
       </div>
 
-      <Separator />
-
       {/* Links Section */}
-      <div className="py-8 px-4 sm:px-6 lg:px-8">
+      <div className="border-t border-border py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {/* Brand */}
+            <div className="col-span-2 md:col-span-1">
+              <div className="flex items-center gap-2 mb-3">
+                <img
+                  src="/logo.png"
+                  alt="Skiller"
+                  className="size-6 rounded-md object-contain"
+                />
+                <span className="font-semibold tracking-tight">
+                  Skiller
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                All your skills in one place.
+              </p>
+            </div>
+
             {/* Product */}
             <div>
-              <h3 className="font-semibold mb-4">Product</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <a
-                    href="#features"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    Features
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#clients"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    Integrations
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/zanwei/skiller/releases"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-foreground transition-colors inline-flex items-center gap-1"
-                  >
-                    Changelog
-                    <ExternalLink className="size-3" />
-                  </a>
-                </li>
+              <h3 className="font-medium text-sm mb-3">Product</h3>
+              <ul className="space-y-2">
+                {footerLinks.product.map((link) => (
+                  <li key={link.label}>
+                    <FooterLink href={link.href} external={link.external}>
+                      {link.label}
+                    </FooterLink>
+                  </li>
+                ))}
               </ul>
             </div>
 
             {/* Resources */}
             <div>
-              <h3 className="font-semibold mb-4">Resources</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <a
-                    href="https://github.com/zanwei/skiller#readme"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-foreground transition-colors inline-flex items-center gap-1"
-                  >
-                    Documentation
-                    <ExternalLink className="size-3" />
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://claude-plugins.dev"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-foreground transition-colors inline-flex items-center gap-1"
-                  >
-                    Plugin Registry
-                    <ExternalLink className="size-3" />
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/zanwei/skiller/issues"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-foreground transition-colors inline-flex items-center gap-1"
-                  >
-                    Support
-                    <ExternalLink className="size-3" />
-                  </a>
-                </li>
+              <h3 className="font-medium text-sm mb-3">Resources</h3>
+              <ul className="space-y-2">
+                {footerLinks.resources.map((link) => (
+                  <li key={link.label}>
+                    <FooterLink href={link.href} external={link.external}>
+                      {link.label}
+                    </FooterLink>
+                  </li>
+                ))}
               </ul>
             </div>
 
             {/* Community */}
             <div>
-              <h3 className="font-semibold mb-4">Community</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <a
-                    href="https://github.com/zanwei/skiller"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-foreground transition-colors inline-flex items-center gap-1"
-                  >
-                    GitHub
-                    <ExternalLink className="size-3" />
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/zanwei/skiller/blob/main/CONTRIBUTING.md"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-foreground transition-colors inline-flex items-center gap-1"
-                  >
-                    Contributing
-                    <ExternalLink className="size-3" />
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/zanwei/skiller/blob/main/CODE_OF_CONDUCT.md"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-foreground transition-colors inline-flex items-center gap-1"
-                  >
-                    Code of Conduct
-                    <ExternalLink className="size-3" />
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <h3 className="font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <a
-                    href="https://github.com/zanwei/skiller/blob/main/LICENSE"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-foreground transition-colors inline-flex items-center gap-1"
-                  >
-                    MIT License
-                    <ExternalLink className="size-3" />
-                  </a>
-                </li>
+              <h3 className="font-medium text-sm mb-3">Community</h3>
+              <ul className="space-y-2">
+                {footerLinks.community.map((link) => (
+                  <li key={link.label}>
+                    <FooterLink href={link.href} external={link.external}>
+                      {link.label}
+                    </FooterLink>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
         </div>
       </div>
 
-      <Separator />
-
       {/* Bottom Section */}
-      <div className="py-6 px-4 sm:px-6 lg:px-8">
+      <div className="border-t border-border py-6 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-medium">Skiller</span>
-          </div>
-
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Skiller. All rights reserved.
+            © {new Date().getFullYear()} Skiller. MIT License.
           </p>
+          <a
+            href="https://github.com/zanwei/skiller"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="GitHub"
+          >
+            <Github className="size-5" />
+          </a>
         </div>
       </div>
     </footer>

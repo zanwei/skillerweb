@@ -1,15 +1,11 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { motion } from "motion/react";
 import {
   Puzzle,
   Sparkles,
-  Settings,
   Keyboard,
   Terminal,
-  Palette,
   Zap,
   Shield,
-  Globe,
 } from "lucide-react";
 
 const features = [
@@ -17,108 +13,119 @@ const features = [
     icon: Puzzle,
     title: "Browse Plugins",
     description:
-      "Discover and install Claude Code plugins from a curated registry. Search, filter, and explore plugins that extend your coding capabilities.",
-    badge: "Core",
+      "Discover and install Claude Code plugins from a curated registry.",
+    span: "lg:col-span-2",
   },
   {
     icon: Sparkles,
     title: "Install Skills",
     description:
-      "Add new skills to your AI assistant with one click. Choose from a variety of specialized skills for different coding tasks.",
-    badge: "Core",
-  },
-  {
-    icon: Settings,
-    title: "Customizable Settings",
-    description:
-      "Configure themes, default paths, package managers, and terminals. Personalize Skiller to match your workflow.",
-    badge: "Flexible",
+      "Add new skills to your AI assistant with one click.",
+    span: "",
   },
   {
     icon: Keyboard,
     title: "Global Shortcuts",
     description:
-      "Access Skiller instantly with customizable keyboard shortcuts. No need to click through menus - just press and go.",
-    badge: "Productivity",
+      "Access Skiller instantly with customizable keyboard shortcuts.",
+    span: "",
   },
   {
     icon: Terminal,
-    title: "Multi-Terminal Support",
+    title: "Multi-Terminal",
     description:
-      "Works with iTerm, Terminal, Warp, Alacritty, Kitty, and more. Commands run in your preferred terminal app.",
-    badge: "Flexible",
-  },
-  {
-    icon: Palette,
-    title: "Theme Support",
-    description:
-      "Light, dark, or system-matched themes. Skiller adapts to your macOS appearance preferences automatically.",
-    badge: "Design",
+      "Works with iTerm, Terminal, Warp, Alacritty, Kitty, and more.",
+    span: "",
   },
   {
     icon: Zap,
     title: "Lightning Fast",
     description:
-      "Built with Tauri and Rust for native performance. Instant startup, minimal memory usage, and blazing fast searches.",
-    badge: "Performance",
+      "Built with Tauri and Rust for native performance.",
+    span: "",
   },
   {
     icon: Shield,
     title: "Privacy First",
     description:
-      "All data stays on your machine. No accounts required, no telemetry, no tracking. Just a helpful tool.",
-    badge: "Security",
-  },
-  {
-    icon: Globe,
-    title: "Cross-Platform",
-    description:
-      "Available for macOS, Windows, and Linux. Same great experience on any operating system.",
-    badge: "Universal",
+      "All data stays on your machine. No accounts, no tracking.",
+    span: "lg:col-span-2",
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+    },
+  },
+};
+
 export function Features() {
   return (
-    <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/30">
+    <section id="features" className="py-24 md:py-32 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <Badge variant="outline" className="mb-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
+          <p className="text-sm font-medium text-primary mb-3 tracking-wide uppercase">
             Features
-          </Badge>
-          <h2 className="text-3xl sm:text-4xl font-medium mb-4">
-            Everything You Need
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Skiller is packed with features to help you discover, install, and
-            manage Claude Code plugins and skills efficiently.
           </p>
-        </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4 tracking-tight text-balance">
+            Everything you need
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto text-pretty">
+            Powerful features to help you discover and manage AI plugins and skills.
+          </p>
+        </motion.div>
 
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Bento Grid */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+        >
           {features.map((feature, index) => (
-            <Card
+            <motion.div
               key={index}
-              className="group hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5"
+              variants={itemVariants}
+              className={`group relative p-6 rounded-2xl border border-border bg-card hover:bg-accent/50 transition-colors ${feature.span}`}
             >
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="w-12 h-12 rounded-xl bg-input flex items-center justify-center mb-4 transition-colors">
-                    <feature.icon className="size-6 text-foreground" />
-                  </div>
-                </div>
-                <CardTitle className="text-lg">{feature.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-sm leading-relaxed">
-                  {feature.description}
-                </CardDescription>
-              </CardContent>
-            </Card>
+              {/* Icon */}
+              <div className="size-10 rounded-xl bg-muted flex items-center justify-center mb-4">
+                <feature.icon className="size-5 text-foreground" />
+              </div>
+
+              {/* Content */}
+              <h3 className="text-lg font-semibold mb-2">
+                {feature.title}
+              </h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                {feature.description}
+              </p>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

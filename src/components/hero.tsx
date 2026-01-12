@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Download, Github } from "lucide-react";
+import { motion } from "motion/react";
 import {
   detectPlatform,
   getSimplePlatformLabel,
@@ -124,126 +125,169 @@ export function Hero({ onDownload }: HeroProps) {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-16 pb-16 overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-chart-2/10 rounded-full blur-3xl animate-pulse delay-1000" />
+    <section className="relative min-h-dvh flex items-center justify-center pt-24 pb-20 overflow-hidden">
+      {/* Subtle dot pattern background */}
+      <div 
+        className="absolute inset-0 opacity-[0.4]"
+        style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
+          backgroundSize: '24px 24px',
+          color: 'var(--muted-foreground)',
+        }}
+      />
+      
+      {/* Radial gradient overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,119,198,0.08),transparent)]" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           {/* Left: Text Content */}
-          <div className="flex-1 text-center lg:text-left pt-16">
-        {/* Main Heading */}
-        <h1 className="text-5xl lg:text-7xl font-medium tracking-[-3px] mb-6">
-          <span className="bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text font-medium h-fit">
-            Skills.md in a place
-          </span>
-        </h1>
-
-        {/* Subtitle */}
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mb-8 font-light">
-          A menubar app for browsing and installing{" "}
-          <span className="text-foreground font-medium">Claude Code plugins</span> and{" "}
-          <span className="text-foreground font-medium">Agent Skills</span>.
-        </p>
-
-        {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4 mb-8">
-          <Button size="lg" onClick={onDownload} className="w-full sm:w-auto gap-2 text-base px-6">
-            <Download className="size-5" />
-            Download for {getSimplePlatformLabel(platform)}
-          </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            asChild
-            className="w-full sm:w-auto gap-2 text-base px-6"
-          >
-            <a
-              href="https://github.com/zanwei/skiller"
-              target="_blank"
-              rel="noopener noreferrer"
+          <div className="flex-1 text-center lg:text-left max-w-2xl">
+            {/* Main Heading */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight mb-6 text-balance leading-[1.1]"
             >
-              <Github className="size-5" />
-              View on GitHub
-            </a>
-          </Button>
-        </div>
+              All your skills
+              <br />
+              <span className="text-muted-foreground">in one place.</span>
+            </motion.h1>
 
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-lg text-muted-foreground max-w-lg mb-8 text-pretty mx-auto lg:mx-0"
+            >
+              A menubar app for browsing and installing{" "}
+              <span className="text-foreground font-medium">Claude Code plugins</span> and{" "}
+              <span className="text-foreground font-medium">Agent Skills</span>.
+            </motion.p>
+
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-6"
+            >
+              <Button
+                size="lg"
+                onClick={onDownload}
+                className="gap-2 px-6 h-12 text-base font-medium shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/25 transition-shadow"
+              >
+                <Download className="size-5" />
+                Download for {getSimplePlatformLabel(platform)}
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                asChild
+                className="gap-2 px-6 h-12 text-base font-medium"
+              >
+                <a
+                  href="https://github.com/zanwei/skiller"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Github className="size-5" />
+                  GitHub
+                </a>
+              </Button>
+            </motion.div>
+
+            {/* Platform availability */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="text-sm text-muted-foreground"
+            >
+              Available for macOS, Windows, and Linux
+            </motion.p>
           </div>
 
           {/* Right: Panel Mockup */}
-          <div className="flex-shrink-0 relative">
-            {/* Glow Effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-chart-2/20 to-primary/20 rounded-2xl blur-xl transform scale-105" />
-
-            {/* App Panel */}
-            <Panel onOpenSettings={handleOpenSettings} showHeader={!showSettings}>
-              {showSettings ? (
-                <Settings onClose={handleBackFromSettings} />
-              ) : (
-                <>
-                  <TabBar
-                    activeTab={activeTab}
-                    onTabChange={handleTabChange}
-                    installedCount={installedCount}
-                  />
-
-                  {activeTab === "plugins" && (
-                    <SearchBar
-                      value={searchQuery}
-                      onChange={setSearchQuery}
-                      placeholder="Search plugins..."
-                      filterDropdown={
-                        <FilterDropdown
-                          label="Category"
-                          options={categoryOptions}
-                          value={pluginCategory}
-                          onChange={setPluginCategory}
-                        />
-                      }
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="w-full lg:w-auto flex justify-center lg:shrink-0 relative"
+          >
+            {/* Shadow/Glow effect behind panel */}
+            <div className="absolute inset-0 translate-y-4 scale-[0.97] blur-3xl bg-foreground/5 rounded-3xl" />
+            
+            <div className="relative scale-[0.84] sm:scale-[0.96] md:scale-[1.08] lg:scale-100 origin-top">
+              {/* App Panel */}
+              <Panel onOpenSettings={handleOpenSettings} showHeader={!showSettings}>
+                {showSettings ? (
+                  <Settings onClose={handleBackFromSettings} />
+                ) : (
+                  <>
+                    <TabBar
+                      activeTab={activeTab}
+                      onTabChange={handleTabChange}
+                      installedCount={installedCount}
                     />
-                  )}
 
-                  {activeTab === "skills" && (
-                    <SearchBar
-                      value={searchQuery}
-                      onChange={setSearchQuery}
-                      placeholder="Search skills..."
-                      filterDropdown={
-                        <SortDropdown
-                          value={skillSort}
-                          onChange={setSkillSort}
-                        />
-                      }
-                    />
-                  )}
+                    {activeTab === "plugins" && (
+                      <SearchBar
+                        value={searchQuery}
+                        onChange={setSearchQuery}
+                        placeholder="Search plugins..."
+                        filterDropdown={
+                          <FilterDropdown
+                            label="Category"
+                            options={categoryOptions}
+                            value={pluginCategory}
+                            onChange={setPluginCategory}
+                          />
+                        }
+                      />
+                    )}
 
-                  {activeTab === "plugins" && (
-                    <PluginList
-                      plugins={filteredPlugins}
-                      total={mockPlugins.length}
-                      onInstall={handleInstallPlugin}
-                      onOpen={handleOpenPlugin}
-                    />
-                  )}
+                    {activeTab === "skills" && (
+                      <SearchBar
+                        value={searchQuery}
+                        onChange={setSearchQuery}
+                        placeholder="Search skills..."
+                        filterDropdown={
+                          <SortDropdown
+                            value={skillSort}
+                            onChange={setSkillSort}
+                          />
+                        }
+                      />
+                    )}
 
-                  {activeTab === "skills" && (
-                    <SkillList
-                      skills={filteredSkills}
-                      total={mockSkills.length}
-                      onInstall={handleInstallSkill}
-                      onInstallTo={handleInstallSkillTo}
-                      onDownload={handleDownloadSkill}
-                    />
-                  )}
+                    {activeTab === "plugins" && (
+                      <PluginList
+                        plugins={filteredPlugins}
+                        total={mockPlugins.length}
+                        onInstall={handleInstallPlugin}
+                        onOpen={handleOpenPlugin}
+                      />
+                    )}
 
-                  {activeTab === "installed" && <InstalledList />}
-                </>
-              )}
-            </Panel>
-          </div>
+                    {activeTab === "skills" && (
+                      <SkillList
+                        skills={filteredSkills}
+                        total={mockSkills.length}
+                        onInstall={handleInstallSkill}
+                        onInstallTo={handleInstallSkillTo}
+                        onDownload={handleDownloadSkill}
+                      />
+                    )}
+
+                    {activeTab === "installed" && <InstalledList />}
+                  </>
+                )}
+              </Panel>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import { motion } from "motion/react";
 
 // Import SVG icons
 import ClaudeIcon from "@/assets/icon/claude-color.svg";
@@ -12,104 +12,65 @@ import AnthropicIcon from "@/assets/icon/anthropic.svg";
 import GithubIcon from "@/assets/icon/github.svg";
 
 const clients = [
-  {
-    name: "Claude",
-    description: "Anthropic's Claude Desktop app",
-    icon: ClaudeIcon,
-    color: "from-orange-500/20 to-amber-500/20",
-  },
-  {
-    name: "Claude Code",
-    description: "Claude's coding-focused interface",
-    icon: ClaudeIcon,
-    color: "from-orange-500/20 to-red-500/20",
-  },
-  {
-    name: "Cursor",
-    description: "AI-powered code editor",
-    icon: CursorIcon,
-    color: "from-blue-500/20 to-cyan-500/20",
-  },
-  {
-    name: "VS Code",
-    description: "Visual Studio Code with AI extensions",
-    icon: VSCodeIcon,
-    color: "from-blue-500/20 to-indigo-500/20",
-  },
-  {
-    name: "Codex",
-    description: "OpenAI Codex integration",
-    icon: OpenAIIcon,
-    color: "from-green-500/20 to-emerald-500/20",
-  },
-  {
-    name: "Amp Code",
-    description: "Amp's AI coding assistant",
-    icon: AmpIcon,
-    color: "from-purple-500/20 to-pink-500/20",
-  },
-  {
-    name: "OpenCode",
-    description: "Open-source AI coding platform",
-    icon: OpenCodeIcon,
-    color: "from-teal-500/20 to-cyan-500/20",
-  },
-  {
-    name: "Goose",
-    description: "Block's AI agent platform",
-    icon: GooseIcon,
-    color: "from-yellow-500/20 to-orange-500/20",
-  },
-  {
-    name: "Letta",
-    description: "Memory-focused AI platform",
-    icon: AnthropicIcon,
-    color: "from-rose-500/20 to-pink-500/20",
-  },
-  {
-    name: "GitHub",
-    description: "GitHub Copilot integration",
-    icon: GithubIcon,
-    color: "from-gray-500/20 to-slate-500/20",
-  },
+  { name: "Claude", icon: ClaudeIcon },
+  { name: "Claude Code", icon: ClaudeIcon },
+  { name: "Cursor", icon: CursorIcon },
+  { name: "VS Code", icon: VSCodeIcon },
+  { name: "Codex", icon: OpenAIIcon },
+  { name: "Amp Code", icon: AmpIcon },
+  { name: "OpenCode", icon: OpenCodeIcon },
+  { name: "Goose", icon: GooseIcon },
+  { name: "Letta", icon: AnthropicIcon },
+  { name: "GitHub", icon: GithubIcon },
 ];
 
 export function Clients() {
   return (
-    <section id="clients" className="py-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
+    <section id="clients" className="py-24 md:py-32 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <Badge variant="outline" className="mb-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12"
+        >
+          <p className="text-sm font-medium text-primary mb-3 tracking-wide uppercase">
             Integrations
-          </Badge>
-          <h2 className="text-3xl sm:text-4xl font-medium mb-4">
-            Works With Your Favorite Tools
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Skiller supports installing skills to all major AI coding assistants.
-            Choose your target client during installation.
           </p>
-        </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4 tracking-tight text-balance">
+            Works with your favorite tools
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto text-pretty">
+            Install skills to all major AI coding assistants.
+          </p>
+        </motion.div>
 
-        {/* Clients Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {/* Simple Grid - Better Performance */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex flex-wrap justify-center gap-3"
+        >
           {clients.map((client, index) => (
             <div
-              key={index}
-              className="group relative p-6 rounded-xl border border-border bg-card hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 text-center"
+              key={client.name + index}
+              className="flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-border bg-card hover:bg-accent/50 transition-colors"
             >
-
-              {/* Content */}
-              <div className="relative">
-                <div className="flex items-center justify-center mb-3">
-                  <img src={client.icon} alt={client.name} className="w-10 h-10" />
-                </div>
-                <h3 className="font-medium text-sm mb-1">{client.name}</h3>
-              </div>
+              <img
+                src={client.icon}
+                alt={client.name}
+                className="size-5 shrink-0"
+              />
+              <span className="text-sm font-medium text-foreground whitespace-nowrap">
+                {client.name}
+              </span>
             </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
