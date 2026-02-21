@@ -11,6 +11,10 @@ export interface ReleaseInfo {
   assets: ReleaseAsset[];
 }
 
+const RELEASE_TAG = "v1.0.5";
+const GITHUB_REPO = "zanwei/skiller";
+const RELEASES_BASE_URL = `https://github.com/${GITHUB_REPO}/releases`;
+
 // 检测平台和架构
 export function detectPlatform(): Platform {
   const platform = navigator.platform.toLowerCase();
@@ -81,7 +85,7 @@ let cachedReleaseInfo: ReleaseInfo | null = null;
 let cacheTimestamp: number = 0;
 const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
 
-// 从 GitHub API 获取最新 release 信息
+// 从 GitHub API 获取目标版本 release 信息
 export async function fetchLatestRelease(): Promise<ReleaseInfo | null> {
   // 检查缓存
   if (cachedReleaseInfo && Date.now() - cacheTimestamp < CACHE_DURATION) {
@@ -89,7 +93,7 @@ export async function fetchLatestRelease(): Promise<ReleaseInfo | null> {
   }
 
   try {
-    const response = await fetch('https://api.github.com/repos/zanwei/skiller/releases/latest');
+    const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases/tags/${RELEASE_TAG}`);
     if (!response.ok) {
       throw new Error(`GitHub API error: ${response.status}`);
     }
@@ -166,22 +170,22 @@ export async function getDownloadUrl(platform: Platform): Promise<string> {
       }
       break;
     default:
-      // 未知平台，返回 releases 页面
-      return "https://github.com/zanwei/skiller/releases";
+      // 未知平台，返回当前版本发布页
+      return `${RELEASES_BASE_URL}/tag/${RELEASE_TAG}`;
   }
 
   if (matchedAsset) {
     return matchedAsset.browser_download_url;
   }
 
-  // 如果没有找到匹配的资产，返回 releases 页面
-  return "https://github.com/zanwei/skiller/releases";
+  // 如果没有找到匹配的资产，返回当前版本发布页
+  return `${RELEASES_BASE_URL}/tag/${RELEASE_TAG}`;
 }
 
 // 同步版本的 getDownloadUrl（用于 GitHub API 不可用时的备用方案）
 // 使用固定文件名，需要配合 CI/CD 在发布时创建不带版本号的文件副本
 export function getDownloadUrlSync(platform: Platform): string {
-  const baseUrl = "https://github.com/zanwei/skiller/releases/latest/download";
+  const baseUrl = `${RELEASES_BASE_URL}/download/${RELEASE_TAG}`;
 
   switch (platform) {
     case "macos-arm":
@@ -193,7 +197,7 @@ export function getDownloadUrlSync(platform: Platform): string {
     case "linux":
       return `${baseUrl}/Skiller_amd64.deb`;
     default:
-      return "https://github.com/zanwei/skiller/releases";
+      return `${RELEASES_BASE_URL}/tag/${RELEASE_TAG}`;
   }
 }
 
